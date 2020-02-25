@@ -1,0 +1,24 @@
+#Concat      
+ConcatLayer concat_layer concat_param 
+#Convolution
+ConvolutionLayer conv_layer conv_param 
+#DetectionOutput
+DetectionOutputLayer detection_output_layer detection_output_param
+#Flatten
+FlattenLayer flatten_layer flatten_param
+#Normalize
+NormalizeLayer normalize_layer norm_param
+#Permute
+PermuteLayer permute_layer permute_param
+#Pooling
+PoolingLayer pooling_layer pooling_param
+#PriorBox
+PriorBoxLayer prior_box_layer prior_box_param
+#ReLU
+ReLULayer relu_layer relu_param
+#Reshape
+ReshapeLayer reshape_layer reshape_param
+#Softmax
+SoftmaxLayer softmax_layer softmax_param
+InputLayer input_layer input_param 0 0
+SplitLayer split_layer split_param 0 0
