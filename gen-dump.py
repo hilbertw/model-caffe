@@ -1,3 +1,5 @@
+import os
+import sys
 from layer_list import layer_list
 
 def split_type(s):
@@ -24,8 +26,18 @@ def gen_dump(f,s):
   #print(syms)
   for s in syms:
   	f.write("print(fp,\"%s\",%s);\n"%(s,s))
+
+
+caffe_path="caffe"
+if len(sys.argv)>1:
+    caffe_path=argv[1]
+
+output_path=caffe_path+"/src/hack/"
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
      
-with open("layer_dump.cpp","w") as f:
+with open(output_path+"layer_dump.cpp","w") as f:
+    f.write('#include "hack/print.h"')
     for l in layer_list:
         if l[1]!="":
     	        f.write("void %s::dump(FILE * fp)\n{\n"%(l[0]))

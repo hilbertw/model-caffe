@@ -1,3 +1,6 @@
+import os
+import sys
+
 from layer_list import layer_list
 
 def split_type(s):
@@ -54,12 +57,22 @@ def print_fields(f,s):
   #print(syms)  
   for s in syms:
   	 print_field(f,type.strip(),s)
+
+
+
+caffe_path="caffe"
+if len(sys.argv)>1:
+    caffe_path=argv[1]
+
+output_path=caffe_path+"/include/hack/"
+if not os.path.exists(output_path):
+    os.makedirs(output_path)  
   	 
-with open("layer_conf.h","w") as f:
+with open(output_path+"layer_conf.h","w") as f:
   f.write("""
 #pragma once
-#include "types.h"
-	""")
+#include "hack/types.h"
+""")
   for l in layer_list:
     if l[1]!="":
       f.write("struct %s_conf\n{\n"%(l[0]))

@@ -1,3 +1,5 @@
+import os
+import sys
 from layer_list import layer_list
 
 def split_type(s):
@@ -26,8 +28,17 @@ def gen_dump(s):
   	yield [type,s]
 
 
-with open("layer_print.cpp","w") as f:
-  f.write("#include \"layer_conf.h\"\n")
+caffe_path="caffe"
+if len(sys.argv)>1:
+    caffe_path=argv[1]
+
+output_path=caffe_path+"/src/hack/"
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
+
+with open(output_path+"layer_print.cpp","w") as f:
+  f.write("#include \"hack/layer_conf.h\"\n")
+  f.write("#include \"hack/print_data.h\"\n")
   s=[]     
   for l in layer_list:
         if l[1]!="":
@@ -47,7 +58,6 @@ void %s::print_data(const std::string & name)
     if(fp)
     {  
 """%(l[0]))
-          f.write("printf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
           for type,v in s:
         	   if type=='vector<int>':
@@ -61,11 +71,11 @@ void %s::print_data(const std::string & name)
         	   	   continue        	   	    
         	   if type=='Blob<int>':
         	   	   f.write("print_blob_int_data(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_int_dim(fp,\"%s\",%s);\n"%(v,v))	   	   
+        	   	   f.write("print_blob_int_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
         	   	   f.write("print_blob_dtype_data(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_dtype_dim(fp,\"%s\",%s);\n"%(v,v))	   	   
+        	   	   f.write("print_blob_dtype_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
         	   	   f.write("print_vector_int_ptr_data(fp,\"%s\",%s);\n"%(v,v))
@@ -79,7 +89,13 @@ void %s::print_data(const std::string & name)
         	   if type=='shared_ptr<DataTransformer<Dtype> >':
         	   	   f.write("print_data_transformer_data(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue  	           	   	    
+
+          f.write("\nprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
+          first=True
           for type,v in s:
+                   if not first:
+                           f.write('fprintf(fp,",\\n");\n')
+                   first=False
         	   if type=='vector<int>':
         	   	   f.write("print_vector_int(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue
@@ -91,11 +107,9 @@ void %s::print_data(const std::string & name)
         	   	   continue        	   	    
         	   if type=='Blob<int>':
         	   	   f.write("print_blob_int(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_int_dim(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
         	   	   f.write("print_blob_dtype(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_dtype_dim(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
         	   	   f.write("print_vector_int_ptr(fp,\"%s\",%s);\n"%(v,v))
