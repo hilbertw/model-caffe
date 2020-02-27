@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
-protoc --python_out=. -Icaffe/src/caffe/proto/ caffe.proto 
+echo  ${PWD}/caffe/src/caffe/proto/
+protoc --python_out=. -I${PWD} -I${PWD}/caffe/src/caffe/proto caffe.proto 
 
  
