@@ -25,7 +25,7 @@ def gen_dump(s):
 #  print(type)
   #print(syms)
   for s in syms:
-  	yield [type,s]
+  	yield [type.strip(),s]
 
 
 caffe_path="caffe"
@@ -52,7 +52,7 @@ for l in layer_list:
       f.write("""
 void print_data(const std::string & name)
 {
-    fn=name+"_d.cpp";
+    std::string fn=name+"_d.cpp";
     FILE * fp=fopen(fn.c_str(),"w");
     if(fp)
     {  
@@ -60,24 +60,24 @@ void print_data(const std::string & name)
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
       for type,v in s:
         	   if type=='vector<int>':
-        	   	   f.write("print_vector_int_data(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype_data<int>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue
         	   if type=='vector<float>':
-        	   	   f.write("print_vector_float_data(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype_data<float>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='vector<string>':
         	   	   f.write("print_vector_string_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='Blob<int>':
-        	   	   f.write("print_blob_int_data(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_int_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
+        	   	   f.write("print_blob_dtype_data<int>(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_blob_dtype_shape_data<int>(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
         	   	   f.write("print_blob_dtype_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   f.write("print_blob_dtype_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
-        	   	   f.write("print_vector_int_ptr_data(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype<int>_ptr_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='map<int,string>' or type=='map<int, string>':
         	   	   f.write("print_map_int_string_data(fp,\"%s\",%s);\n"%(v,v))
@@ -96,22 +96,22 @@ void print_data(const std::string & name)
                            f.write('fprintf(fp,",\\n");\n')
                    first=False
         	   if type=='vector<int>':
-        	   	   f.write("print_vector_int(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype<int>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue
         	   if type=='vector<float>':
-        	   	   f.write("print_vector_float(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype<float>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='vector<string>':
         	   	   f.write("print_vector_string(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='Blob<int>':
-        	   	   f.write("print_blob_int(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_blob_dtype<int>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
         	   	   f.write("print_blob_dtype(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
-        	   	   f.write("print_vector_int_ptr(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_dtype<int>_ptr(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='map<int,string>' or type=='map<int, string>':
         	   	   f.write("print_map_int_string(fp,\"%s\",%s);\n"%(v,v))
@@ -121,7 +121,8 @@ void print_data(const std::string & name)
         	   	   continue      
         	   if type=='shared_ptr<DataTransformer<Dtype> >':
         	   	   f.write("print_data_transformer(fp,\"%s\", %s);\n"%(v,v))
-        	   	   continue         
+        	   	   continue       
+                     
         	   f.write("print(fp,\"%s\",%s);\n"%(v,v))
 
       f.write("fprintf(fp,\"\\n};\\n\");\n")           
