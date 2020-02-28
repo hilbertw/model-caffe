@@ -32,34 +32,33 @@ caffe_path="caffe"
 if len(sys.argv)>1:
     caffe_path=argv[1]
 
-output_path=caffe_path+"/src/hack/"
+output_path=caffe_path+"/include/hack/"
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-with open(output_path+"layer_print.cpp","w") as f:
-  f.write("#include \"hack/layer_conf.h\"\n")
-  f.write("#include \"hack/print_data.h\"\n")
-  s=[]     
-  for l in layer_list:
-        if l[1]!="":
-          lines=l[1].strip().split(";")
-          for line in lines:
-    #         print(line)         
-             line.strip(' \n')         
-             line.rstrip(' \n')          
-    #         print(line)
-             if line !="":
-                s=s+list(gen_dump(line))
-          f.write("""
-void %s::print_data(const std::string & name)
+for l in layer_list:
+   s=[]     
+   if l[1]!="":
+      lines=l[1].strip().split(";")
+      for line in lines:
+#         print(line)         
+         line.strip(' \n')         
+         line.rstrip(' \n')          
+#         print(line)
+         if line !="":
+            s=s+list(gen_dump(line))
+   fn="%s_print.h"%(l[0])
+   with open(output_path+fn,"w") as f:
+      f.write("""
+void print_data(const std::string & name)
 {
     fn=name+"_d.cpp";
     FILE * fp=fopen(fn.c_str(),"w");
     if(fp)
     {  
-"""%(l[0]))
+""")
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
-          for type,v in s:
+      for type,v in s:
         	   if type=='vector<int>':
         	   	   f.write("print_vector_int_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue
@@ -90,9 +89,9 @@ void %s::print_data(const std::string & name)
         	   	   f.write("print_data_transformer_data(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue  	           	   	    
 
-          f.write("\nprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
-          first=True
-          for type,v in s:
+      f.write("\nfprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
+      first=True
+      for type,v in s:
                    if not first:
                            f.write('fprintf(fp,",\\n");\n')
                    first=False
@@ -125,6 +124,6 @@ void %s::print_data(const std::string & name)
         	   	   continue         
         	   f.write("print(fp,\"%s\",%s);\n"%(v,v))
 
-          f.write("fprintf(fp,\"\\n};\\n\");\n")           
-          f.write("fclose(fp);\n   }\n}")      
-  f.close()
+      f.write("fprintf(fp,\"\\n};\\n\");\n")           
+      f.write("fclose(fp);\n   }\n}")      
+      f.close()
