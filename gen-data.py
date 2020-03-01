@@ -77,7 +77,7 @@ void print_data(const std::string & name)
         	   	   f.write("print_blob_dtype_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
-        	   	   f.write("print_vector_dtype<int>_ptr_data(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_int_ptr_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='map<int,string>' or type=='map<int, string>':
         	   	   f.write("print_map_int_string_data(fp,\"%s\",%s);\n"%(v,v))
@@ -86,7 +86,7 @@ void print_data(const std::string & name)
         	   	   f.write("print_vector_pair_int_int_data(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue      
         	   if type=='shared_ptr<DataTransformer<Dtype> >':
-        	   	   f.write("print_data_transformer_data(fp,\"%s\", %s);\n"%(v,v))
+        	   	   f.write("print_transformer_data(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue  	           	   	    
 
       f.write("\nfprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
@@ -111,7 +111,7 @@ void print_data(const std::string & name)
         	   	   f.write("print_blob_dtype(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
-        	   	   f.write("print_vector_dtype<int>_ptr(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_vector_int_ptr(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='map<int,string>' or type=='map<int, string>':
         	   	   f.write("print_map_int_string(fp,\"%s\",%s);\n"%(v,v))
@@ -120,7 +120,7 @@ void print_data(const std::string & name)
         	   	   f.write("print_vector_pair_int_int(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue      
         	   if type=='shared_ptr<DataTransformer<Dtype> >':
-        	   	   f.write("print_data_transformer(fp,\"%s\", %s);\n"%(v,v))
+        	   	   f.write("print_transformer(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue       
                      
         	   f.write("print(fp,\"%s\",%s);\n"%(v,v))

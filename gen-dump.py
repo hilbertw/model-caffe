@@ -27,7 +27,7 @@ def gen_dump(f,s):
 #  print(type)
   #print(syms)
   for s in syms:
-  	f.write("print(fp,\"%s\",%s);\n"%(s,s))
+  	f.write("dump_data(fp,\"%s\",%s);\n"%(s,s))
 
 caffe_path="caffe"
 if len(sys.argv)>1:
