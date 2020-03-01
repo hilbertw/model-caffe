@@ -30,10 +30,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
+set(BOOST_LIBS -lboost_system -lboost_filesystem -lboost_regex )
+set(OPENCV_LIBS -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab)
+set(LIBS -lcblas  -lhdf5_serial -lhdf5_serial_hl -lprotobuf  -lglog -lgflags )
 
 
-find_package(Caffe)
-
+#find_package(Caffe)
+find_package(Boost REQUIRED COMPONENTS system filesystem regex thread) 
+set(Caffe_INCLUDE_DIRS /disk1/model-caffe/caffe/include  /disk1/model-caffe/caffe/build/src/ )
+set(Caffe_LIBRARIES  /disk1/model-caffe/caffe/build/lib/libcaffe.so )
+set(Caffe_DEFINITIONS -DCPU_ONLY=1 )
 find_package(OpenCV)
 add_compile_options(-lpthread)
 include_directories(${Caffe_INCLUDE_DIRS})
@@ -41,7 +47,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 add_definitions(${Caffe_DEFINITIONS})
 add_executable(ssd_detect ssd_detect.cpp detect.cpp)
 
-target_link_libraries(ssd_detect ${OpenCV_LIBS} ${Caffe_LIBRARIES} )
+target_link_libraries(ssd_detect  ${Caffe_LIBRARIES} ${OpenCV_LIBS}   ${Boost_LIBRARIES} -lglog -lgflags ) 
 
 message(${Caffe_INCLUDE_DIRS})
 message(${OpenCV_INCLUDE_DIRS})

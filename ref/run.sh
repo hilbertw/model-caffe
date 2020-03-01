@@ -12,6 +12,7 @@ fi
 
 #while((1==1));
 #do
+#gdb --args\
 build/ssd_detect \
 ./models/VGGNet/VOC0712Plus/SSD_512x512/deploy.prototxt \
 ./models/VGGNet/VOC0712Plus/SSD_512x512/VGG_VOC0712Plus_SSD_512x512_iter_240000.caffemodel \
