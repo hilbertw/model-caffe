@@ -50,12 +50,13 @@ for l in layer_list:
    fn="%s_print.h"%(l[0])
    with open(output_path+fn,"w") as f:
       f.write("""
-void print_data(const std::string & name)
+virtual void print_data(const std::string & name) const
 {
     std::string fn=name+"_d.cpp";
     FILE * fp=fopen(fn.c_str(),"w");
     if(fp)
-    {  
+    { 
+    printf("%s opened.",fn.c_str()); 
 """)
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
       for type,v in s:
@@ -87,6 +88,9 @@ void print_data(const std::string & name)
         	   	   continue      
         	   if type=='shared_ptr<DataTransformer<Dtype> >':
         	   	   f.write("print_transformer_data(fp,\"%s\", %s);\n"%(v,v))
+        	   	   continue  	           	   	    
+        	   if type=='ResizeParameter':
+        	   	   f.write("print_resize_param_data(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue  	           	   	    
 
       f.write("\nfprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
@@ -126,5 +130,5 @@ void print_data(const std::string & name)
         	   f.write("print(fp,\"%s\",%s);\n"%(v,v))
 
       f.write("fprintf(fp,\"\\n};\\n\");\n")           
-      f.write("fclose(fp);\n   }\n}")      
+      f.write("fclose(fp);\n   }else perror(\"fopen\");\n}")      
       f.close()
