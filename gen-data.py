@@ -56,7 +56,8 @@ virtual void print_data(const std::string & name) const
     FILE * fp=fopen(fn.c_str(),"w");
     if(fp)
     { 
-    printf("%s opened.",fn.c_str()); 
+    fprintf("#pragma once\\n"); 
+    fprintf("#include \"hack/layer_conf.h\"\\n"); 
 """)
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
       for type,v in s:
@@ -93,7 +94,7 @@ virtual void print_data(const std::string & name) const
         	   	   f.write("print_resize_param_data(fp,\"%s\", %s);\n"%(v,v))
         	   	   continue  	           	   	    
 
-      f.write("\nfprintf(fp,\"struct %s_conf %%s = {\\n\",name.c_str());\n"%(l[0]))          
+      f.write("\nfprintf(fp,\"struct %s_conf %%s_conf = {\\n\",name.c_str());\n"%(l[0]))          
       first=True
       for type,v in s:
                    if not first:
@@ -130,5 +131,5 @@ virtual void print_data(const std::string & name) const
         	   f.write("print(fp,\"%s\",%s);\n"%(v,v))
 
       f.write("fprintf(fp,\"\\n};\\n\");\n")           
-      f.write("fclose(fp);\n   }else perror(\"fopen\");\n}")      
+      f.write("fclose(fp);\n   }\nelse\n{\n perror(\"fopen\");\n}\n}")      
       f.close()

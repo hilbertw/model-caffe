@@ -17,6 +17,8 @@ void setup(%s  &param);
 
 %s _%s() const {return *_layer_param;}
 
+void config(struct %s_conf &conf);
+
 %s * _layer_param;
 
 %s
@@ -77,7 +79,7 @@ with open("layers.txt","r") as f:
          m=methods_h
 
        with open("gen/"+fn+"_ext.h","w") as ff:
-          ff.write(h_tmpl%(fn,c,c,c,c,p,p,p,p,m))
+          ff.write(h_tmpl%(fn,c,c,c,c,p,p,p,c,p,m))
           ff.close()
        m=""
        if words[3]=="1":

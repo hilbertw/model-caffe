@@ -35,6 +35,9 @@ def print_field(f,type,v):
 	   if type=='shared_ptr<DataTransformer<Dtype> >':
 	   	   f.write("data_transformer_def %s;\n"%( v))
 	   	   return  	   	
+	   if type=='ResizeParameter':
+	   	   f.write("resize_param_def %s;\n"%( v))
+	   	   return  	   	
 	   f.write("%s %s;\n"%(type,v))    
      
 def print_fields(f,s):
