@@ -127,3 +127,16 @@ with open("gen/layer_config.cpp","w") as f:
          	  print_fields(f,line)
     f.write("\n};\n")      
   f.close()
+with open("gen/config_objs.mak","w") as f:
+    f.write("CONF_OBJS := \\\n")
+    i=0
+    for l in net.layers:
+              name=net._layer_names[i]
+              i=i+1
+              if l.type=='Input':
+                  continue
+              f.write("%s_d.o \\\n" %(name))
+ 
+
+  	 
+    f.close()
