@@ -21,7 +21,7 @@ def print_field(f,type,v):
 	   	   f.write("blob_int_def %s;\n"%( v))  	   
 	   	   return        	   	    
 	   if type=='Blob<Dtype>':
-	   	   f.write("blob_dtype_def %s;\n"%( v))
+	   	   f.write("blob_dtype_def<_Dtype_> %s;\n"%( v))
 	   	   return        	   	    
 	   if type=='const vector<int>*':
 	   	   f.write("vector_int_ptr_def %s;\n"%( v))
@@ -33,11 +33,23 @@ def print_field(f,type,v):
 	   	   f.write("vector_pair_int_int_def %s;\n"%( v))
 	   	   return  	   	   
 	   if type=='shared_ptr<DataTransformer<Dtype> >':
-	   	   f.write("data_transformer_def %s;\n"%( v))
+	   	   f.write("data_transformer_def<_Dtype_> %s;\n"%( v))
 	   	   return  	   	
 	   if type=='ResizeParameter':
 	   	   f.write("resize_param_def %s;\n"%( v))
 	   	   return  	   	
+	   if type=='ptree':
+	   	   f.write("boost::property_tree::ptree %s;\n"%( v))
+	   	   return        	   	    
+	   if type=='Dtype':
+	   	   f.write("_Dtype_ %s;\n"%( v))
+	   	   return        	   	    
+	   if type=='string':
+	   	   f.write("std::string %s;\n"%( v))
+	   	   return        	   	    
+	   if type=='CodeType':
+	   	   f.write("int %s;\n"%( v))
+	   	   return        	   	    
 	   f.write("%s %s;\n"%(type,v))    
      
 def print_fields(f,s):

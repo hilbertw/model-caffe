@@ -109,7 +109,6 @@ void sc_net::config_layers()
   	 
 with open("gen/layer_config.cpp","w") as f:
   f.write("""
-#pragma once
 #include "hack/layer_conf.h"
 #include "hack/ext_layers.h"
 #include "conv_struct.h"
