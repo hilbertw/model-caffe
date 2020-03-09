@@ -5,7 +5,7 @@ include gen/config_objs.mak
 #$info $(OBJS))
 #$info $(EXT_OBJS))
 
-SC_OBJS:= main.o sc_net.o caffe.pb.o layer_params.o  setup_layers.o   sc_layer.o net_blobs.o net_weights.o net_wire.o
+SC_OBJS:= main.o sc_net.o caffe.pb.o layer_params.o  setup_layers.o config_layers.o layer_config.o  sc_layer.o net_blobs.o net_weights.o net_wire.o
 SC_OBJS:= $(SC_OBJS) cv-bridge.o ssd_detect.o 
 
 CAFFE_SOURCE=/disk1/model-caffe/caffe

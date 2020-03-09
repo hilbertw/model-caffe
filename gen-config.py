@@ -25,8 +25,11 @@ def print_field(f,type,v):
 	   if type=='Blob<int>':
 	   	   f.write("conv_blob_int(%s,conf.%s);\n"%((v,v)))  	   
 	   	   return        	   	    
+	   if type=='Blob<float>':
+	   	   f.write("conv_blob_float(%s,conf.%s);\n"%((v,v)))  	   
+	   	   return        	   	    
 	   if type=='Blob<Dtype>':
-	   	   f.write("conv_blob_dtype(%s,conf.%s);\n"%((v,v)))
+	   	   f.write("conv_blob_dtype<_Dtype_>(%s,conf.%s);\n"%((v,v)))
 	   	   return        	   	    
 	   if type=='const(v,v)ector<int>*':
 	   	   f.write("conv_vector_int_ptr(%s,conf.%s);\n"%((v,v)))
@@ -43,6 +46,10 @@ def print_field(f,type,v):
 	   if type=='ResizeParameter':
 	   	   f.write("conv_resize_param(%s,conf.%s);\n"%((v,v)))
 	   	   return  	   	
+	   if type=='CodeType':
+	   	   f.write("%s=(caffe::CodeType)conf.%s;\n"%((v,v)))
+	   	   return  	   	
+	   f.write("%s=conf.%s;\n"%(v,v))    
 	   f.write("%s=conf.%s;\n"%(v,v))    
      
 def print_fields(f,s):
@@ -81,11 +88,29 @@ net.copy_from(weights)
 
 #print_net(net)
 
+with open ("gen/config_data.h","w") as f:
+    f.write("""
+#pragma once
+#include "layer_conf.h"
+""")
+    i=0
+    for l in net.layers:
+              name=net._layer_names[i]
+              i=i+1
+              if l.type=='Input':
+                  continue
+              if l.type=='Split':
+                  continue
+              f.write("extern struct %sLayer_conf %s_conf;\n" %(l.type,name))
+
+    f.close()
+
 with open ("gen/config_layers.cpp","w") as f:
     f.write("""
 #include "ext_layers.h"
 #include "sc_net.h"
 #include "layer_params.h"
+#include "config_data.h"
 
 void sc_net::config_layers()
 {
@@ -99,7 +124,6 @@ void sc_net::config_layers()
                   continue
               if l.type=='Split':
                   continue
-              f.write("extern struct %s_conf %s_conf;\n" %(l.type,name))
               f.write("%s.get().config(%s_conf);\n" %(name,name))
 
     f.write("\n}")
@@ -109,12 +133,12 @@ void sc_net::config_layers()
   	 
 with open("gen/layer_config.cpp","w") as f:
   f.write("""
-#include "hack/layer_conf.h"
-#include "hack/ext_layers.h"
+#include "layer_conf.h"
+#include "ext_layers.h"
 #include "conv_struct.h"
 """)
   for l in layer_list:
-    f.write("%s_ext::config(struct %s_conf &conf)\n{\n"%(l[0],l[0]))
+    f.write("void %s_ext::config(struct %s_conf &conf)\n{\n"%(l[0],l[0]))
     if l[1]!="":
       lines=l[1].strip().split(";")
       for line in lines:

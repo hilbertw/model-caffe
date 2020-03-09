@@ -23,6 +23,7 @@ SC_MODULE(sc_net)
   void  create_blobs();
   void  setup_blobs();
   void   setup_layers();
+  void   config_layers();
   void   setup_wires();
 
   std::vector<caffe::Blob< float >*> blobs;

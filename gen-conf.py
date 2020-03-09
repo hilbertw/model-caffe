@@ -79,9 +79,9 @@ caffe_path="caffe"
 if len(sys.argv)>1:
     caffe_path=argv[1]
 
-output_path=caffe_path+"/include/hack/"
-if not os.path.exists(output_path):
-    os.makedirs(output_path)  
+output_path="gen/"
+#if not os.path.exists(output_path):
+#    os.makedirs(output_path)  
   	 
 with open(output_path+"layer_conf.h","w") as f:
   f.write("""
@@ -92,6 +92,8 @@ with open(output_path+"layer_conf.h","w") as f:
     if l[1]!="":
       f.write("struct %s_conf\n{\n"%(l[0]))
       lines=l[1].strip().split(";")
+      if len(lines)<1:
+          f.write("int dummy;\n")
       for line in lines:
 #         print(line)         
          line.strip(' \n')         
