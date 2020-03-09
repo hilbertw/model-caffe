@@ -1,4 +1,4 @@
-#include "caffe.pb.h"
+#include "caffe/proto/caffe.pb.h"
 #include "sc_layer.h"
 #include "ext_layers.h"
 

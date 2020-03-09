@@ -19,9 +19,15 @@ CFLAGS:=$(CFLAGS) --std=c++11  -I $(CAFFE_SOURCE)/include -I$(SC_SOURCE)/gen -I$
 LDFLAGS:=$(LDFLAGS) -L. -L$(SYSTEMC_INSTALL)/lib  -L $(CAFFE_SOURCE)/build/lib -lsystemc -lcaffe -lprotobuf  -lglog -lm
 
 BOOST_LIBS:=-lboost_system -lboost_filesystem -lboost_regex
-OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
+#OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
+
+
+OPENCV_LIBS:= -lopencv_videostab -lopencv_video -lopencv_ts -lopencv_superres -lopencv_stitching -lopencv_photo -lopencv_ocl -lopencv_objdetect -lopencv_ml -lopencv_legacy -lopencv_imgproc -lopencv_highgui -lopencv_gpu -lopencv_flann -lopencv_features2d -lopencv_core -lopencv_contrib -lopencv_calib3d
 
 ALL_OBJS:=$(addprefix obj/,$(OBJS) $(EXT_OBJS) $(SC_OBJS) $(WEIGHT_OBJS) $(CONF_OBJS))
+
+obj/caffe.pb.o:$(CAFFE_SOURCE)/build/src/caffe/proto/caffe.pb.cc
+	 g++ -c -o $@ $(CFLAGS)  $<
 
 obj/%.o:$(CAFFE_SOURCE)/src/caffe/layers/%.cpp
 	 g++ -c -o $@ $(CFLAGS)  $<
