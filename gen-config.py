@@ -31,7 +31,7 @@ def print_field(f,type,v):
 	   if type=='Blob<Dtype>':
 	   	   f.write("conv_blob_dtype<_Dtype_>(%s,conf.%s);\n"%((v,v)))
 	   	   return        	   	    
-	   if type=='const(v,v)ector<int>*':
+	   if type=='vector<int>*' or type=='const vector<int>*':
 	   	   f.write("conv_vector_int_ptr(%s,conf.%s);\n"%((v,v)))
 	   	   return        	   	    
 	   if type=='map<int,string>' or type=='map<int, string>':

@@ -163,7 +163,7 @@ split="""
 """
   
 layer_list=[
-["BaseConvolutionLayer",base_convolution],
+#["BaseConvolutionLayer",base_convolution],
 ["ConcatLayer",concat],
 ["ConvolutionLayer",conv],
 ["DetectionOutputLayer",detect_output],
