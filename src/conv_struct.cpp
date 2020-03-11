@@ -73,8 +73,8 @@ void conv_data_float_r( google::protobuf::RepeatedField<float>& data,struct vect
 {
 }
 #define CONV_FIELD(x) dest.set_##x(def.x)
-#define CONV_FIELD_R(x) conv_data_int_r(dest.x,def.x)
-#define CONV_FIELD_R_F(x) conv_data_float_r(dest.x, def.x)
+#define CONV_FIELD_R_E(x,t) for(int i=0;i<def.x.count;i++) dest.add_##x (t(def.x.data[i]));
+#define CONV_FIELD_R(x) for(int i=0;i<def.x.count;i++) dest.add_##x (def.x.data[i]);
 
 void conv_resize_param(caffe::ResizeParameter&dest, resize_param_def& def )
 {
@@ -82,10 +82,10 @@ void conv_resize_param(caffe::ResizeParameter&dest, resize_param_def& def )
    CONV_FIELD(width);
    CONV_FIELD(height_scale);
    CONV_FIELD(width_scale);
-//   dest.set_resize_mode((caffe::ResizeParameter_Resize_mode)def.resize_mode);
-//   CONV_FIELD_R(interp_mode);
-//   CONV_FIELD(pad_mode);
-//   CONV_FIELD_R_F(pad_value);
+   dest.set_resize_mode(caffe::ResizeParameter_Resize_mode(def.resize_mode));
+   CONV_FIELD_R_E(interp_mode,caffe::ResizeParameter_Interp_mode);
+   dest.set_pad_mode(caffe::ResizeParameter_Pad_mode(def.pad_mode));
+   CONV_FIELD_R(pad_value);
 }
 void conv_vector_int(std::vector<int>&dest, vector_int_def& def )
 {
@@ -98,10 +98,11 @@ void conv_vector_float(std::vector<float>&dest, vector_float_def& def )
           dest.resize(def.count);
           for(int i=0;i<def.count;i++) dest[i]=def.data[i];
 }
-void conv_vector_int_ptr(std::vector<int > *&dest, vector_int_ptr_def& def )
+void conv_vector_int_ptr(const std::vector<int > *&dest, vector_int_ptr_def& def )
 {
-          dest->resize(def.count);
-          for(int i=0;i<def.count;i++) dest->data()[i]=def.data[i];
+          std::vector<int > *temp = new std::vector<int > (def.count);
+          for(int i=0;i<def.count;i++) temp->data()[i]=def.data[i];
+          dest=temp;
 }
 void conv_vector_pair_int_int(std::vector<std::pair<int, int> >&dest, vector_pair_int_int_def& def )
 {

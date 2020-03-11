@@ -38,8 +38,10 @@ SC_MODULE(  sc_layer) {
 template<class T>
 void sc_layer<T>::load_weight(std::vector<int> &shape,const float * data,const float * diff)
 {
-       //caffe::Blob< float  > b(shape); 
-       caffe::BlobProto proto;
+       caffe::Blob< float  > b(shape);
+       b.set_cpu_data((float*)data);
+       b.set_cpu_diff((float*)diff);
+       //caffe::BlobProto proto;
 
        //b.FromProto(proto,false);
 
@@ -47,9 +49,9 @@ void sc_layer<T>::load_weight(std::vector<int> &shape,const float * data,const f
        //b_ptr->Reshape(shape);
        //b_ptr->FromProto(proto,false);  
        //caffe_layer.blobs().push_back(b_ptr);
-       caffe_layer.blobs().emplace_back();
-       caffe_layer.blobs().back()->Reshape(shape);
-       caffe_layer.blobs().back()->FromProto(proto,false);
+       //caffe_layer.blobs().emplace_back();
+       //caffe_layer.blobs().back()->Reshape(shape);
+       //caffe_layer.blobs().back()->FromProto(proto,false);
 ;
 }
 template<class T>

@@ -13,4 +13,4 @@ void conv_vector_float(std::vector<float> & dest,vector_float_def & def);
 void conv_blob_float(caffe::Blob<float> & dest,blob_float_def & def);
 void conv_blob_int(caffe::Blob<int> & dest,blob_int_def & def);
 template <typename Dtype>void conv_data_transformer(boost::shared_ptr<caffe::DataTransformer<Dtype> >&, data_transformer_def<Dtype>&);
-void conv_vector_int_ptr( std::vector<int>* &dest,vector_int_ptr_def&);
+void conv_vector_int_ptr(const  std::vector<int>* &dest,vector_int_ptr_def&);
