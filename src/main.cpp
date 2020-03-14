@@ -19,17 +19,31 @@ int sc_main(int argc, char* argv[]) {
 
         bridge::init(net.input_blobs[0],net.output_blobs[0]);	
 	sc_signal<bool> clock;
+	sc_signal<bool> input_filled;
+	sc_signal<bool> output_empty;
 
 	net.clk(clock);
+	net.input_filled(input_filled);
+	net.output_empty(output_empty);
 
 	int numberCycles = 0;
 
 	while (not sc_end_of_simulation_invoked()) {
 		clock = 0;
+                if(net.input_empty.read())
+                {
+                       bridge::read_in_image();
+                       input_filled.write(1);
+                }
 		sc_start(1, SC_NS);
 		clock = 1;
 		sc_start(1, SC_NS);
 		numberCycles++;
+                if(net.output_filled.read())
+                {
+                       bridge::read_out_result();
+                       output_empty.write(1);
+                }
 	}
 	
 	cout << "\nFinished after " << numberCycles - 4 << " cicles. Final state:\n" << endl;	

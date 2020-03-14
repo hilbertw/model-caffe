@@ -56,7 +56,7 @@ virtual void print_data(const std::string & name) const
     FILE * fp=fopen(fn.c_str(),"w");
     if(fp)
     { 
-    fprintf(fp,"#include \\"hack/layer_conf.h\\"\\n"); 
+    fprintf(fp,"#include \\"layer_conf.h\\"\\n"); 
 """)
           # scan  vector<int/float/pair>,blob<int/dtype>,map<int,string>
       for type,v in s:

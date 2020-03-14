@@ -41,7 +41,14 @@ for l in layer_list:
         if l[1]!="":
             fn="%s_dump.h"%(l[0])
             with open(output_path+fn,"w") as f:
-    	        f.write("void dump(FILE * fp)const\n{\n")
+    	        f.write("""
+void dump(const std::string & name)const
+{
+    std::string fn = name+std::string("_dump.txt");
+    FILE * fp =fopen(fn.c_str(),"w");
+    if(fp)
+    {
+""")
     	        lines=l[1].strip().split(";")
     	        for line in lines:
 #                 print(line)         
@@ -50,5 +57,8 @@ for l in layer_list:
 #                 print(line)
                  if line !="":
                    gen_dump(f,line)
-    	        f.write("\n}\n")   
+    	        f.write("""
+    }
+}
+""")   
                 f.close()
