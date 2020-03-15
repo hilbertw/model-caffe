@@ -10,6 +10,7 @@ SC_MODULE(sc_net)
 
   SC_CTOR(sc_net)
   {
+     init();
   }
   sc_in<bool> clk;
   sc_in<bool> input_filled;
@@ -25,6 +26,7 @@ SC_MODULE(sc_net)
   void   setup_layers();
   void   config_layers();
   void   setup_wires();
+  void dump();
 
   std::vector<caffe::Blob< float >*> blobs;
   std::vector<caffe::Blob< float >*> input_blobs;

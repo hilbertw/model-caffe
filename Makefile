@@ -6,7 +6,7 @@ include gen/config_objs.mak
 #$info $(EXT_OBJS))
 
 SC_OBJS:= main.o sc_net.o caffe.pb.o layer_params.o  setup_layers.o config_layers.o layer_config.o  sc_layer.o net_blobs.o net_weights.o net_wire.o
-SC_OBJS:= $(SC_OBJS) cv-bridge.o ssd_detect.o conv_struct.o 
+SC_OBJS:= $(SC_OBJS) cv-bridge.o ssd_detect.o conv_struct.o net_dump.o util.o 
 
 CAFFE_SOURCE=/disk1/model-caffe/caffe
 SC_SOURCE=/disk1/model-caffe/
@@ -19,12 +19,14 @@ CFLAGS:=$(CFLAGS) --std=c++11  -I $(CAFFE_SOURCE)/include -I$(SC_SOURCE)/gen -I$
 LDFLAGS:=$(LDFLAGS) -L. -L$(SYSTEMC_INSTALL)/lib  -L $(CAFFE_SOURCE)/build/lib -lsystemc -lcaffe -lprotobuf  -lglog -lm
 
 BOOST_LIBS:=-lboost_system -lboost_filesystem -lboost_regex
-#OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
+OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
 
 
-OPENCV_LIBS:= -lopencv_videostab -lopencv_video -lopencv_ts -lopencv_superres -lopencv_stitching -lopencv_photo -lopencv_ocl -lopencv_objdetect -lopencv_ml -lopencv_legacy -lopencv_imgproc -lopencv_highgui -lopencv_gpu -lopencv_flann -lopencv_features2d -lopencv_core -lopencv_contrib -lopencv_calib3d
+#OPENCV_LIBS:= -lopencv_videostab -lopencv_video -lopencv_ts -lopencv_superres -lopencv_stitching -lopencv_photo -lopencv_ocl -lopencv_objdetect -lopencv_ml -lopencv_legacy -lopencv_imgproc -lopencv_highgui -lopencv_gpu -lopencv_flann -lopencv_features2d -lopencv_core -lopencv_contrib -lopencv_calib3d
 
-ALL_OBJS:=$(addprefix obj/,$(OBJS) $(EXT_OBJS) $(SC_OBJS) $(WEIGHT_OBJS) $(CONF_OBJS))
+ALL_OBJS:=$(addprefix obj/, $(EXT_OBJS) $(SC_OBJS) $(WEIGHT_OBJS) $(CONF_OBJS))
+
+all: sim 
 
 obj/caffe.pb.o:$(CAFFE_SOURCE)/build/src/caffe/proto/caffe.pb.cc
 	 g++ -c -o $@ $(CFLAGS)  $<
@@ -45,11 +47,9 @@ sim:$(ALL_OBJS)
 	g++ -o $@ $^  $(LDFLAGS) $(BOOST_LIBS) $(OPENCV_LIBS) 
 
 
-
 run:
         LD_LIBRARY_PATH=$(SYSTEMC_INSTALL)/lib ./sim
 	
-all: model	 
 
 .phony: clean
 

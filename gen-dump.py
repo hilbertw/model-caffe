@@ -1,5 +1,6 @@
 import os
 import sys
+import caffe
 from layer_list import layer_list
 
 
@@ -30,8 +31,6 @@ def gen_dump(f,s):
   	f.write("dump_data(fp,\"%s\",%s);\n"%(s,s))
 
 caffe_path="caffe"
-if len(sys.argv)>1:
-    caffe_path=argv[1]
 
 output_path=caffe_path+"/include/hack/"
 if not os.path.exists(output_path):
@@ -42,7 +41,7 @@ for l in layer_list:
             fn="%s_dump.h"%(l[0])
             with open(output_path+fn,"w") as f:
     	        f.write("""
-void dump(const std::string & name)const
+virtual void dump(const std::string & name)const
 {
     std::string fn = name+std::string("_dump.txt");
     FILE * fp =fopen(fn.c_str(),"w");
@@ -58,7 +57,42 @@ void dump(const std::string & name)const
                  if line !="":
                    gen_dump(f,line)
     	        f.write("""
+       fclose(fp);
     }
 }
-""")   
-                f.close()
+""")
+    	        f.close()
+
+
+
+if len(sys.argv)<3:
+    sys.exit(0)
+
+model=sys.argv[1]
+weights=sys.argv[2]
+
+print(model)
+print(weights)
+
+
+net = caffe.Net(model, caffe.TEST)
+net.copy_from(weights)
+
+#print_net(net)
+
+with open("gen/net_dump.cpp","w") as f:
+     f.write(
+"""
+#include "sc_net.h"
+void sc_net::dump()
+{
+"""
+     )
+
+     for name in net._layer_names:
+         f.write("%s.get().dump(\"sc_%s\");\n"%(name,name))
+     f.write(
+"""
+}
+""")
+     f.close()

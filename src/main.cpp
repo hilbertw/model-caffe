@@ -16,7 +16,7 @@ int sc_main(int argc, char* argv[]) {
 	sleep(1);
 
 	sc_net net("net");
-
+        net.dump();
         bridge::init(net.input_blobs[0],net.output_blobs[0]);	
 	sc_signal<bool> clock;
 	sc_signal<bool> input_filled;
