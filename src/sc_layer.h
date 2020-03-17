@@ -1,8 +1,9 @@
 #pragma once
-#include <boost/smart_ptr/make_shared_array.hpp>
+//#include <boost/smart_ptr/make_shared_array.hpp>
 #include "systemc.h"
 #include "caffe/caffe.hpp"
 #include "caffe/blob.hpp"
+#include "hack/types.h"
 
 template<class T>
 SC_MODULE(  sc_layer) {
@@ -28,32 +29,16 @@ SC_MODULE(  sc_layer) {
    {
         caffe_layer.Forward(bottom,top);
    }
-    
+   std::vector<caffe::shared_ptr<caffe::Blob<_Dtype_>>> &blobs()
+   {
+       return caffe_layer.blobs();
+   } 
    std::vector<caffe::Blob< float >*> top,bottom;
    void append_top(caffe::Blob< float >* b){ top.push_back(b);}
    void append_bottom(caffe::Blob< float >* b){ bottom.push_back(b);}
-   void load_weight(std::vector<int>& shape,const float * data, const float * diff);
 };
 
 
-template<class T>
-void sc_layer<T>::load_weight(std::vector<int> &shape,const float * data,const float * diff)
-{
-       caffe::Blob< float  > *b=new  caffe::Blob< float  >(shape);
-       b->set_cpu_data((float*)data);
-       b->set_cpu_diff((float*)diff);
-       //caffe::BlobProto proto;
-
-       //b.FromProto(proto,false);
-
-       boost::shared_ptr<caffe::Blob< float  >> b_ptr(b);//boost::make_shared<caffe::Blob< float  >>();
-       //b_ptr->Reshape(shape);
-       //b_ptr->FromProto(proto,false);  
-       //b_ptr->set_cpu_data((float*)data);
-       //b_ptr->set_cpu_diff((float*)diff);
-       caffe_layer.blobs().push_back(b_ptr);
-;
-}
 template<class T>
 void sc_layer<T>::run()
 {
