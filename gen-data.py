@@ -74,8 +74,8 @@ virtual void print_data(const std::string & name) const
         	   	   f.write("print_blob_dtype_shape_data<int>(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
-        	   	   f.write("print_blob_dtype_data(fp,\"%s\",%s);\n"%(v,v))
-        	   	   f.write("print_blob_dtype_shape_data(fp,\"%s\",%s);\n"%(v,v))	   	   
+        	   	   f.write("print_blob_dtype_data<Dtype>(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_blob_dtype_shape_data<Dtype>(fp,\"%s\",%s);\n"%(v,v))	   	   
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
         	   	   f.write("print_vector_int_ptr_data(fp,\"%s\",%s);\n"%(v,v))
@@ -112,7 +112,7 @@ virtual void print_data(const std::string & name) const
         	   	   f.write("print_blob_dtype<int>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='Blob<Dtype>':
-        	   	   f.write("print_blob_dtype(fp,\"%s\",%s);\n"%(v,v))
+        	   	   f.write("print_blob_dtype<Dtype>(fp,\"%s\",%s);\n"%(v,v))
         	   	   continue        	   	    
         	   if type=='const vector<int>*':
         	   	   f.write("print_vector_int_ptr(fp,\"%s\",%s);\n"%(v,v))

@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <new>
 
 #include "systemc.h"
 #include "sc_net.h"
@@ -14,7 +15,7 @@ using namespace std;
 int sc_main(int argc, char* argv[]) {
         cout << "Loading processor..." << endl;
 	sleep(1);
-
+try{
 	sc_net net("net");
         net.dump();
         bridge::init(net.input_blobs[0],net.output_blobs[0]);	
@@ -47,6 +48,11 @@ int sc_main(int argc, char* argv[]) {
 	}
 	
 	cout << "\nFinished after " << numberCycles - 4 << " cicles. Final state:\n" << endl;	
-
+}
+  catch (std::bad_alloc& ba)
+  {
+    std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+  }
+ 
 }
 

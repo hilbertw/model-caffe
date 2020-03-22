@@ -14,19 +14,19 @@ def split_type(s):
 def print_field(f,type,v):
 	   f.write('/*%s*/\n'%(type))
 	   if type=='vector<int>':
-	   	   f.write("conv_vector_int(%s,conf.%s);\n"%((v,v)))
+	   	   f.write("conv_vector_dtype<int>(%s,conf.%s);\n"%((v,v)))
 	   	   return
 	   if type=='vector<float>':
-	   	   f.write("conv_vector_float(%s,conf.%s);\n"%((v,v)))
+	   	   f.write("conv_vector_dtype<float>(%s,conf.%s);\n"%((v,v)))
 	   	   return        	   	    
 	   if type=='vector<string>':
 	   	   f.write("conv_vector_string(%s,conf.%s);\n"%((v,v)))
 	   	   return        	   	    
 	   if type=='Blob<int>':
-	   	   f.write("conv_blob_int(%s,conf.%s);\n"%((v,v)))  	   
+	   	   f.write("conv_blob_dtype<int>(%s,conf.%s);\n"%((v,v)))  	   
 	   	   return        	   	    
 	   if type=='Blob<float>':
-	   	   f.write("conv_blob_float(%s,conf.%s);\n"%((v,v)))  	   
+	   	   f.write("conv_blob_dtype<float>(%s,conf.%s);\n"%((v,v)))  	   
 	   	   return        	   	    
 	   if type=='Blob<Dtype>':
 	   	   f.write("conv_blob_dtype<_Dtype_>(%s,conf.%s);\n"%((v,v)))

@@ -18,7 +18,7 @@ project(ref)
 get_filename_component(PRO_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
 
 add_definitions(-DLOG_TAG=ref)
-
+set(DEBUG TRUE)
 if(DEBUG)
   add_definitions(-DDEBUG)
   message(STATUS "Using macro DEBUG")

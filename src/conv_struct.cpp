@@ -14,18 +14,39 @@ void conv_shape(std::vector<int>&shape,struct shape_def &def)
         shape.resize(def.count); 
         for(int i=0;i<def.count;i++) shape[i]=def.data[i];
 }
+template <typename Dtype> Dtype * get_data(int flag, int size)
+{
+        Dtype  *d=(Dtype *)malloc(size*sizeof(Dtype));
+        if(flag==3) memset(d,size*sizeof(Dtype),0);
+        else 
+        for(int i=0;i<size;i++) d[i]=1;
+
+        return d; 
+
+}
 template <typename Dtype> void conv_blob_dtype(caffe::Blob<Dtype>&dest, blob_dtype_def<Dtype>& def )
 {
         std::vector<int> shape;
         conv_shape(shape,def.shape);
         dest.Reshape(shape);
-        dest.set_cpu_data(def.data);
-        dest.set_cpu_diff(def.diff);
+        Dtype *d;
+        if(def.data_flag)
+        {
+             d=def.data_flag==1?def.data:get_data<Dtype>(def.data_flag,def.count);
+
+             dest.set_cpu_data(d);
+        }
+        if(def.diff_flag)
+        {
+             d=def.diff_flag==1?def.diff:get_data<Dtype>(def.diff_flag,def.count);
+
+             dest.set_cpu_diff(d);
+        }
 }
 template void conv_blob_dtype(caffe::Blob<float>&dest, blob_dtype_def<float>&);
 template void conv_blob_dtype(caffe::Blob<int>&dest, blob_dtype_def<int>&);
 template void conv_blob_dtype(caffe::Blob<double>&dest, blob_dtype_def<double>&);
-
+#if 0
 void conv_blob_int(caffe::Blob<int>&dest, blob_int_def& def )
 {
         std::vector<int> shape;
@@ -52,10 +73,20 @@ void conv_blob_double(caffe::Blob<double>&dest, blob_double_def& def )
         dest.set_cpu_data(def.data);
         dest.set_cpu_diff(def.diff);
 }
+#endif
+
 template <typename Dtype> void conv_data_transformer(boost::shared_ptr<caffe::DataTransformer<Dtype> >&dest, data_transformer_def<Dtype>& def )
 {
-     conv_vector_dtype<Dtype>(dest->mean_values_,def.mean_values);
-     conv_blob_dtype<Dtype>(dest->data_mean_,def.data_mean_);
+
+     caffe::TransformationParameter param;
+     caffe::DataTransformer<Dtype>*p = new caffe::DataTransformer<Dtype>(param,caffe::Phase(def.phase));
+     assert(p);
+
+     conv_vector_dtype<Dtype>(p->mean_values_,def.mean_values);
+     conv_blob_dtype<Dtype>(p->data_mean_,def.data_mean_);
+     boost::shared_ptr<caffe::DataTransformer<Dtype> >p_ptr(p);
+     dest=p_ptr;
+
 }
 template void conv_data_transformer<float>(boost::shared_ptr<caffe::DataTransformer<float> >&dest, data_transformer_def<float>& def );
 template void conv_data_transformer<double>(boost::shared_ptr<caffe::DataTransformer<double> >&dest, data_transformer_def<double>& def );
@@ -66,11 +97,9 @@ void conv_map_int_string(std::map<int, std::string >&dest, map_int_string_def& d
           for(int i=0;i<def.count;i++) {dest[def.data[i].first]=def.data[i].second;}
 }
 
-void conv_data_int_r( google::protobuf::RepeatedField<int>& data,struct vector_int_def &def)
+template <typename Dtype> void conv_data_r( google::protobuf::RepeatedField<Dtype>& data, vector_dtype_def<Dtype> &def)
 {
-}
-void conv_data_float_r( google::protobuf::RepeatedField<float>& data,struct vector_float_def &def)
-{
+          for(int i=0;i<def.count;i++) data.add(def.data[i]);
 }
 #define CONV_FIELD(x) dest.set_##x(def.x)
 #define CONV_FIELD_R_E(x,t) for(int i=0;i<def.x.count;i++) dest.add_##x (t(def.x.data[i]));
