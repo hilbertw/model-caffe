@@ -47,7 +47,10 @@ def print_field(f,type,v):
 	   	   f.write("conv_resize_param(%s,conf.%s);\n"%((v,v)))
 	   	   return  	   	
 	   if type=='CodeType':
-	   	   f.write("%s=(caffe::CodeType)conf.%s;\n"%((v,v)))
+	   	   f.write("%s=caffe::CodeType(conf.%s);\n"%((v,v)))
+	   	   return  	   	
+	   if type=='string':
+	   	   f.write("%s=std::string(conf.%s);\n"%((v,v)))
 	   	   return  	   	
 	   f.write("%s=conf.%s;\n"%(v,v))    
 	   f.write("%s=conf.%s;\n"%(v,v))    

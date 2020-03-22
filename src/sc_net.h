@@ -9,6 +9,10 @@ SC_MODULE(sc_net)
 {
 
   SC_CTOR(sc_net)
+    :clk("clk"),input_filled("input_filled"),
+     output_empty("output_empty"),
+     output_filled("output_filled"),
+     input_empty("input_empty")
   {
      init();
   }
