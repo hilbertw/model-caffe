@@ -22,14 +22,17 @@ try{
 	sc_signal<bool> clock;
 	sc_signal<bool> input_filled;
 	sc_signal<bool> output_empty;
-
-	net.clk(clock);
 	net.input_filled(input_filled);
 	net.output_empty(output_empty);
 
+	net.clk(clock);
+        net.setup_wires();
+
+
+        cout << "running..." << endl;
 	int numberCycles = 0;
 
-	while (not sc_end_of_simulation_invoked()) {
+	while (numberCycles<1000 && not sc_end_of_simulation_invoked()) {
 		clock = 0;
                 if(net.input_empty.read())
                 {

@@ -7,5 +7,5 @@ void sc_net::init()
     setup_blobs();
     setup_layers();
     config_layers();
-    setup_wires();
+//    setup_wires();
 }
