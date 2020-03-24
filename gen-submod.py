@@ -157,3 +157,56 @@ with open("gen/submodules.h","w") as f:
      if n>1:
               f.write("sc_and<%d> output_and{\"output_and\"};\n"%(n))
      f.close() 
+
+with open("gen/net_debug.cpp","w") as f:
+     f.write("""
+#include "sc_net.h"
+void sc_net::debug()
+{
+""")
+     i=0
+     for l in net.layers:
+         name=net._layer_names[i]
+         f.write("%s.debug();\n"%(name))
+         i=i+1
+
+     i=0
+     for l in net.layers:
+         name=net._layer_names[i]
+         top_ids=net._top_ids(i)
+         n=len(top_ids)
+         if n>1:
+              f.write("%s_top_and.debug();\n"%(name))
+         bottom_ids=net._bottom_ids(i)
+         n=len(bottom_ids)
+         if n>1:
+              f.write("%s_bottom_and.debug();\n"%(name))
+         i=i+1
+     s=[]
+     for id in net._inputs:
+         l=find_in_bottom(net,id)
+         if l<0:
+             raise(0)
+         if not l in s:
+             s.append(l)
+     n=len(s)   
+     if n <1:
+         raise(0)    
+     if n>1:
+              f.write("input_and.debug();\n")
+    
+     s=[]
+     for id in net._outputs:
+         l=find_in_top(net,id)
+         if l<0:
+            print(id)
+            raise(0)
+         if not l in s:
+             s.append(l)
+     n=len(s)   
+     if n <1:
+         raise(0)    
+     if n>1:
+         f.write("output_and.debug();\n")
+     f.write("\n}\n")
+     f.close() 

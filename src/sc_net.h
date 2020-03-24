@@ -31,6 +31,7 @@ SC_MODULE(sc_net)
   void   config_layers();
   void   setup_wires();
   void dump();
+  void debug();
 
   std::vector<caffe::Blob< float >*> blobs;
   std::vector<caffe::Blob< float >*> input_blobs;
