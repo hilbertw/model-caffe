@@ -2,6 +2,6 @@
  python gen-data.py
  python gen-layer.py 
   
- python3 gen-dump.py 
+ python3.6 gen-dump.py 
  python gen-mak.py
 

@@ -20,15 +20,20 @@ try{
         net.dump();
         bridge::init(net.input_blobs[0],net.output_blobs[0]);	
 	sc_signal<bool> clock;
+	sc_signal<bool> reset;
 	sc_signal<bool> input_filled;
 	sc_signal<bool> output_empty;
 	net.input_filled(input_filled);
 	net.output_empty(output_empty);
 
 	net.clk(clock);
+        net.reset(reset);
         net.setup_wires();
 
-
+        std::cout << "resetting..." << endl;
+        reset.write(false);
+	sc_start(1, SC_NS);
+        reset.write(true);
         cout << "running..." << endl;
 	int numberCycles = 0;
 

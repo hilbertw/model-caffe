@@ -17,6 +17,7 @@ SC_MODULE(sc_net)
      init();
   }
   sc_in<bool> clk;
+  sc_in<bool> reset;
   sc_in<bool> input_filled;
   sc_in<bool> output_empty;
   sc_out<bool> output_filled;

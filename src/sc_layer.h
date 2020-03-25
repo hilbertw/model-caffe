@@ -8,7 +8,14 @@
 template<class T>
 SC_MODULE(  sc_layer) {
 
-    SC_CTOR( sc_layer)
+    SC_CTOR( sc_layer):
+       clk("clk"),
+       reset("reset"),
+       top_blob_filled("top_blob_filled"),
+       top_blob_empty("top_blob_empty"),
+       bottom_blob_filled("bottom_blob_filled"),
+       bottom_blob_empty("bottom_blob_empty")
+      
     {
         SC_THREAD(run);
         //-- Sentivity list --//
