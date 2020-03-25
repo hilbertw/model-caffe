@@ -34,6 +34,7 @@ try{
 
 	while (numberCycles<1000 && not sc_end_of_simulation_invoked()) {
 		clock = 0;
+                net.debug();
                 if(net.input_empty.read())
                 {
                        bridge::read_in_image();

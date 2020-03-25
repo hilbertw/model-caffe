@@ -23,7 +23,7 @@ SC_MODULE(  sc_layer) {
    sc_in<bool> top_blob_empty;
    sc_in<bool> bottom_blob_filled;
 
-    void run();
+   void run();
     T & get() {return caffe_layer;}
    void forward()
    {
@@ -36,6 +36,13 @@ SC_MODULE(  sc_layer) {
    std::vector<caffe::Blob< float >*> top,bottom;
    void append_top(caffe::Blob< float >* b){ top.push_back(b);}
    void append_bottom(caffe::Blob< float >* b){ bottom.push_back(b);}
+   void debug(){ 
+      std::cout <<name() << std::endl;
+      std::cout <<top_blob_filled<<';'
+                <<bottom_blob_empty<<';'
+                <<top_blob_empty <<';'
+                <<bottom_blob_filled <<std::endl;
+  }
 };
 
 

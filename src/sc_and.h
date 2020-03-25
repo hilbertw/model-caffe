@@ -14,10 +14,19 @@ SC_MODULE(sc_and)
    void run()
    {
         bool r=true;
-        for(int i=0;i<N;i++) r&=-in[i].read();
+        for(int i=0;i<N;i++) r&=in[i].read();
         out.write(r);
    }
 
+   void debug()
+   {
+
+        std::cout << name() << std::endl;
+
+        for(int i=0;i<N;i++) std::cout <<i <<':'<<in[i] << ";";
+        std:cout <<std::endl << out << std::endl;
+       
+   }
    sc_out<bool> out;
    sc_in<bool> in[N];
 };
