@@ -47,15 +47,22 @@ for l in net.layers:
         j=find_in_bottom(net,id)
         if j>=0:
             n.append(net._layer_names[j])
+    nn=[]
+    for id in net._bottom_ids(i):
+        j=find_in_top(net,id)
+        if j>=0:
+            nn.append(net._layer_names[j])
 
-    m.append(','.join(n))
+    m.append((','.join(n),','.join(nn)))
     i=i+1
+
 i=0
 
 with open("model.txt","w") as f:
-   for n in m:
+   for n,nn in m:
         name=net._layer_names[i]
         f.write('\n%s:\n'%(name))
+        f.write('[%s]\n'%(nn))  
         f.write('[%s]\n'%(n))  
         i=i+1
    f.close()
