@@ -32,6 +32,8 @@ try{
 
         std::cout << "resetting..." << endl;
         reset.write(false);
+        input_filled.write(false);
+        output_empty.write(false);
 	sc_start(1, SC_NS);
         reset.write(true);
         cout << "running..." << endl;
@@ -43,8 +45,8 @@ try{
                 if(net.input_empty.read())
                 {
                        bridge::read_in_image();
-                       input_filled.write(1);
-                }
+                       input_filled.write(true);
+                }else input_filled.write(false);
 		sc_start(1, SC_NS);
 		clock = 1;
 		sc_start(1, SC_NS);
@@ -52,8 +54,8 @@ try{
                 if(net.output_filled.read())
                 {
                        bridge::read_out_result();
-                       output_empty.write(1);
-                }
+                       output_empty.write(true);
+                }else   output_empty.write(false);
 	}
 	
 	cout << "\nFinished after " << numberCycles - 4 << " cicles. Final state:\n" << endl;	

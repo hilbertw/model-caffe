@@ -6,6 +6,7 @@ SC_MODULE(sc_and)
 {
    SC_CTOR(sc_and):out("out"),in("in",N)
    {
+       out(result);
        SC_THREAD(run);
        for(int i=0;i<N;i++)
            sensitive << in[i];
@@ -15,7 +16,7 @@ SC_MODULE(sc_and)
    {
         bool r=true;
         for(int i=0;i<N;i++) r&=in[i].read();
-        out.write(r);
+        result.write(r);
    }
 
    void debug()
@@ -24,9 +25,10 @@ SC_MODULE(sc_and)
         std::cout << name() << std::endl;
 
         for(int i=0;i<N;i++) std::cout <<i <<':'<<in[i] << ";";
-        std:cout <<std::endl << out << std::endl;
+        std:cout <<std::endl << result << std::endl;
        
    }
    sc_out<bool> out;
    sc_vector<sc_in<bool>> in;
+   sc_signal<bool> result;
 };

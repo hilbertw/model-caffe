@@ -6,95 +6,37 @@ import os
 import sys
 
 
-def find_in_bottom(net,id):
-    i=0
-    for l in net.layers:
+def find_in_bottom(net,id,start):
+    i=start+1
+    while i<len( net.layers):
         ids=net._bottom_ids(i)
         if id in ids:
            return i
         i=i+1
     return -1
 
-def find_in_top(net,id):
-    i=0
-    for l in net.layers:
+def find_in_top(net,id,start):
+    i=start-1
+    while i>=0:
         ids=net._top_ids(i)
         if id in ids:
            return i
-        i=i+1
+        i=i-1
     return -1
    
+def find_top_layer(net,i):
+    s=[]
+    for id in net._top_ids(i):
+        l=find_in_bottom(net,id,i)
+        s.append(l)
+    return s
 
-def print_vec(t,v):
-    print(t)
-    for e in v:
-       print(e)
-
-def print_layer(l):
-    #print(l.type)
-    #print_layer_param(l)
-    print("blobs:%d\n"%(len(l.blobs)))
-    #print_vec(l.__dict__)
-
-
-def print_blob(l):
-    #print(dir(l))
-    #print_layer_param(l)
-    #print("blobs:%d\n"%(len(l.blobs)))
-    #print_vec(l.__dict__)
-    print("%s,%s,%s,%s,%s"%(l.channels,l.count,l.height,l.num,l.width))
-    for d in l.shape:
-        print(d)
-    print(len(l.data))
-    print(len(l.diff))
-
-def print_net(n):
-    
-    #print_vec("backward()backward()",n.backward())
-    
-    #print_vec("_batch",n._batch())
-    #print_vec("_blob_loss_weights",n._blob_loss_weights)
-   
-    print_vec("_blob_names:",n._blob_names)
-    for b in n._blobs:
-        print_blob(b)
-    
-#    print_vec("_bottom_ids():",n._bottom_ids())
-#    print_vec("_top_ids():",n._top_ids())
-#    print(dir(n._forward))
-#    print(dir(n._inputs))
-#    print_vec("_layer_names:",n._layer_names)
-#    print(dir(n._outputs))
-
-    print_vec("outputs:",n.outputs)
-    print_vec("inputs:",n.inputs)
-#    for l in n.layers:
-#       print_layer(l)
-#    print(dir(n.params))
-#    print(dir(n.params.__class__))
-#    for k in n.params.keys():
-#         print (k)
-#    print(dir(n.blob_loss_weights))
-#    print(dir(n.blobs))
-    print_vec("bottom_names:",n.bottom_names)
-    print_vec("top_names:",n.top_names)
-#clear_param_diffs
-#copy_from
-#backward
-#forward
-#forward_all
-#forward_backward_all
-#load_hdf5
-#reshape
-#save
-#save_hdf5
-#set_input_arrays
-#_set_input_arrays
-#share_with
-
-
-
-
+def find_bottom_layer(net,i):
+    s=[]
+    for id in net._bottom_ids(i):
+        l=find_in_top(net,id,i)
+        s.append(l)
+    return s
 
 if len(sys.argv)<3:
     sys.exit(0)
@@ -121,18 +63,18 @@ with open("gen/submodules.h","w") as f:
      i=0
      for l in net.layers:
          name=net._layer_names[i]
-         top_ids=net._top_ids(i)
-         n=len(top_ids)
+         top_layers=find_top_layer(net,i)
+         n=len(top_layers)
          if n>1:
               f.write("sc_and<%d> %s_top_and{\"%s_top_and\"};\n"%(n,name,name))
-         bottom_ids=net._bottom_ids(i)
-         n=len(bottom_ids)
+         bottom_layers=find_bottom_layer(net,i)
+         n=len(bottom_layers)
          if n>1:
               f.write("sc_and<%d> %s_bottom_and{\"%s_bottom_and\"};\n"%(n,name,name))
          i=i+1
      s=[]
      for id in net._inputs:
-         l=find_in_bottom(net,id)
+         l=find_in_top(net,id,len(net._layer_names))
          if l<0:
              raise(0)
          if not l in s:
@@ -145,7 +87,7 @@ with open("gen/submodules.h","w") as f:
     
      s=[]
      for id in net._outputs:
-         l=find_in_top(net,id)
+         l=find_in_top(net,id,len(net._layer_names))
          if l<0:
             print(id)
             raise(0)
@@ -173,18 +115,18 @@ void sc_net::debug()
      i=0
      for l in net.layers:
          name=net._layer_names[i]
-         top_ids=net._top_ids(i)
-         n=len(top_ids)
+         top_layers=find_top_layer(net,i)
+         n=len(top_layers)
          if n>1:
               f.write("%s_top_and.debug();\n"%(name))
-         bottom_ids=net._bottom_ids(i)
-         n=len(bottom_ids)
+         bottom_layers=find_bottom_layer(net,i)
+         n=len(bottom_layers)
          if n>1:
               f.write("%s_bottom_and.debug();\n"%(name))
          i=i+1
      s=[]
      for id in net._inputs:
-         l=find_in_bottom(net,id)
+         l=find_in_top(net,id,len(net._layer_names))
          if l<0:
              raise(0)
          if not l in s:
@@ -197,7 +139,7 @@ void sc_net::debug()
     
      s=[]
      for id in net._outputs:
-         l=find_in_top(net,id)
+         l=find_in_top(net,id,len(net._layer_names))
          if l<0:
             print(id)
             raise(0)

@@ -14,9 +14,13 @@ SC_MODULE(  sc_layer) {
        top_blob_filled("top_blob_filled"),
        top_blob_empty("top_blob_empty"),
        bottom_blob_filled("bottom_blob_filled"),
-       bottom_blob_empty("bottom_blob_empty")
+       bottom_blob_empty("bottom_blob_empty"),
+       top_filled("top_filled"),
+       bottom_empty("bottom_empty")
       
     {
+        top_blob_filled(top_filled);
+        bottom_blob_empty(bottom_empty);
         SC_THREAD(run);
         //-- Sentivity list --//
         sensitive << clk.pos()<<reset;
@@ -29,9 +33,12 @@ SC_MODULE(  sc_layer) {
    sc_out<bool> bottom_blob_empty;
    sc_in<bool> top_blob_empty;
    sc_in<bool> bottom_blob_filled;
+   sc_signal<bool>top_filled;
+   sc_signal<bool>bottom_empty;
 
    void run();
     T & get() {return caffe_layer;}
+
    void forward()
    {
         caffe_layer.Forward(bottom,top);
@@ -58,16 +65,16 @@ void sc_layer<T>::run()
 {
         if(reset.read()==false)
         {
-                 top_blob_filled.write(false);
-                 bottom_blob_empty.write(true);
+                 top_filled.write(false);
+                 bottom_empty.write(true);
      
         }
         else if(bottom_blob_filled && top_blob_empty)
         {
-                 top_blob_filled.write(false);
-                 bottom_blob_empty.write(false);
+                 top_filled.write(false);
+                 bottom_empty.write(false);
                  forward();
-                 top_blob_filled.write(true);
-                 bottom_blob_empty.write(true);
+                 top_filled.write(true);
+                 bottom_empty.write(true);
         }
 }

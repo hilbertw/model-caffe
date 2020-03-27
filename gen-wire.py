@@ -114,7 +114,7 @@ void sc_net::setup_wires()
 
      s=[]
      for id in net._inputs:
-         l=find_in_bottom(net,id,0)
+         l=find_in_top(net,id,len(net._layer_names))
          if l<0:
              raise(0)
          if not l in s:
