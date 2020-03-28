@@ -21,9 +21,9 @@ SC_MODULE(  sc_layer) {
     {
         top_blob_filled(top_filled);
         bottom_blob_empty(bottom_empty);
-        SC_THREAD(run);
+        SC_METHOD(run);
         //-- Sentivity list --//
-        sensitive << clk.pos()<<reset;
+        sensitive << clk.pos()<<reset<<top_blob_empty<<bottom_blob_filled;
     }
 
    T caffe_layer;
@@ -51,11 +51,11 @@ SC_MODULE(  sc_layer) {
    void append_top(caffe::Blob< float >* b){ top.push_back(b);}
    void append_bottom(caffe::Blob< float >* b){ bottom.push_back(b);}
    void debug(){ 
-      std::cout <<name() << std::endl;
-      std::cout <<top_blob_filled<<';'
-                <<bottom_blob_empty<<';'
-                <<top_blob_empty <<';'
-                <<bottom_blob_filled <<std::endl;
+      std::cout <<name() << ":"
+                <<"top filled:" << top_blob_filled<<';'
+                <<"top empty:" << top_blob_empty <<';'
+                <<"bottom empty:" << bottom_blob_empty<<';'
+                <<"bottom filled:" << bottom_blob_filled <<std::endl;
   }
 };
 
@@ -63,18 +63,30 @@ SC_MODULE(  sc_layer) {
 template<class T>
 void sc_layer<T>::run()
 {
+        debug();
         if(reset.read()==false)
         {
                  top_filled.write(false);
                  bottom_empty.write(true);
      
         }
-        else if(bottom_blob_filled && top_blob_empty)
+        else 
         {
-                 top_filled.write(false);
+          if(bottom_blob_filled )
+          {
                  bottom_empty.write(false);
+          }
+          else if(!bottom_empty.read() && top_blob_empty.read())
+          {
                  forward();
                  top_filled.write(true);
                  bottom_empty.write(true);
+          }
+          if ( !top_blob_empty.read())
+          {
+                 top_filled.write(false);
+               
+          }
         }
+        debug();
 }

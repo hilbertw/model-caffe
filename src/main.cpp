@@ -33,15 +33,16 @@ try{
         std::cout << "resetting..." << endl;
         reset.write(false);
         input_filled.write(false);
-        output_empty.write(false);
+        output_empty.write(true);
 	sc_start(1, SC_NS);
         reset.write(true);
         cout << "running..." << endl;
 	int numberCycles = 0;
 
 	while (numberCycles<1000 && not sc_end_of_simulation_invoked()) {
+                std::cout <<"No:" << numberCycles <<":"<<std::endl;
 		clock = 0;
-                net.debug();
+//                net.debug();
                 if(net.input_empty.read())
                 {
                        bridge::read_in_image();
@@ -58,7 +59,7 @@ try{
                 }else   output_empty.write(false);
 	}
 	
-	cout << "\nFinished after " << numberCycles - 4 << " cicles. Final state:\n" << endl;	
+	cout << "\nFinished after " << numberCycles - 4 << " cycles. Final state:\n" << endl;	
 }
   catch (std::bad_alloc& ba)
   {
