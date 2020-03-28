@@ -19,12 +19,17 @@ CFLAGS:=$(CFLAGS) --std=c++11  -I $(CAFFE_SOURCE)/include -I$(SC_SOURCE)/gen -I$
 LDFLAGS:=$(LDFLAGS) -L. -L$(SYSTEMC_INSTALL)/lib  -L $(CAFFE_SOURCE)/build/lib -lsystemc -lcaffe -lprotobuf  -lglog -lm
 
 BOOST_LIBS:=-lboost_system -lboost_filesystem -lboost_regex
-#OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
+OPENCV_LIBS:= -L /usr/local/lib -lopencv_calib3d -lopencv_core -lopencv_dnn -lopencv_features2d -lopencv_flann -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_ml -lopencv_objdetect -lopencv_photo -lopencv_shape -lopencv_stitching -lopencv_superres -lopencv_video -lopencv_videoio -lopencv_videostab
 
 
-OPENCV_LIBS:= -lopencv_videostab -lopencv_video -lopencv_ts -lopencv_superres -lopencv_stitching -lopencv_photo -lopencv_ocl -lopencv_objdetect -lopencv_ml -lopencv_legacy -lopencv_imgproc -lopencv_highgui -lopencv_gpu -lopencv_flann -lopencv_features2d -lopencv_core -lopencv_contrib -lopencv_calib3d
+#OPENCV_LIBS:= -lopencv_videostab -lopencv_video -lopencv_ts -lopencv_superres -lopencv_stitching -lopencv_photo -lopencv_ocl -lopencv_objdetect -lopencv_ml -lopencv_legacy -lopencv_imgproc -lopencv_highgui -lopencv_gpu -lopencv_flann -lopencv_features2d -lopencv_core -lopencv_contrib -lopencv_calib3d
 
 ALL_OBJS:=$(addprefix obj/, $(EXT_OBJS) $(SC_OBJS) $(WEIGHT_OBJS) $(CONF_OBJS))
+
+program_NAME := sim
+program_SRCS :=$(notdir $(wildcard src/*.cpp gen/*.cpp ) )
+
+clean_list := $(ALL_OBJS) $(program_NAME) 
 
 all: sim 
 
@@ -34,16 +39,16 @@ obj/caffe.pb.o:$(CAFFE_SOURCE)/build/src/caffe/proto/caffe.pb.cc
 obj/%.o:$(CAFFE_SOURCE)/src/caffe/layers/%.cpp
 	 g++ -c -o $@ $(CFLAGS)  $<
 
-obj/%.o:$(SC_SOURCE)/gen/%.cpp
+obj/%.o:$(SC_SOURCE)/gen/%.cpp  
 	 g++ -c -o $@ $(CFLAGS)  $<
 	 
 obj/%.o:$(SC_SOURCE)/gen/%.cc
 	 g++ -c -o $@ $(CFLAGS)  $<
 
-obj/%.o:$(SC_SOURCE)/src/%.cpp
+obj/%.o:$(SC_SOURCE)/src/%.cpp  
 	 g++ -c -o $@ $(CFLAGS)  $<
 
-sim:$(ALL_OBJS)
+$(program_NAME):$(ALL_OBJS)
 	g++ -o $@ $^  $(LDFLAGS) $(BOOST_LIBS) $(OPENCV_LIBS) 
 
 
@@ -54,6 +59,21 @@ run:
 .phony: clean
 
 clean:
-	rm -rf sim obj/*	 
+	rm -rf  $(clean_list)	 
 	 
+DEP_FILES:=$(addprefix obj/, $(program_SRCS:.cpp=.d))
+clean_list += $(DEP_FILES)
 
+# Generate dependencies for all files in project
+obj/%.d: $(SC_SOURCE)/src/%.cpp 
+	g++ $(CFLAGS) -MM $^ | sed -e 's@^\(.*\)\.o:@obj/\1.d obj/\1.o:@' > $@
+
+obj/%.d: $(SC_SOURCE)/gen/%.cpp 
+	g++ $(CFLAGS) -MM $^ | sed -e 's@^\(.*\)\.o:@obj/\1.d obj/\1.o:@' > $@
+
+
+
+ifneq "$(MAKECMDGOALS)" "clean"
+# Include the list of dependancies generated for each object file
+-include $(DEP_FILES)
+endif
