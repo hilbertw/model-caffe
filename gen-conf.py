@@ -92,8 +92,7 @@ with open(output_path+"layer_conf.h","w") as f:
     if l[1]!="":
       f.write("struct %s_conf\n{\n"%(l[0]))
       lines=l[1].strip().split(";")
-      if len(lines)<1:
-          f.write("int dummy;\n")
+      n=0
       for line in lines:
 #         print(line)         
          line.strip(' \n')         
@@ -101,5 +100,8 @@ with open(output_path+"layer_conf.h","w") as f:
 #         print(line)
          if line !="":
          	  print_fields(f,line)
+                  n=n+1
+      if n<1:
+          f.write("int dummy;\n")
       f.write("\n};\n")      
   f.close()

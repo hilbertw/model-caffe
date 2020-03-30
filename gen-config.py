@@ -53,7 +53,6 @@ def print_field(f,type,v):
 	   	   f.write("%s=std::string(conf.%s);\n"%((v,v)))
 	   	   return  	   	
 	   f.write("%s=conf.%s;\n"%(v,v))    
-	   f.write("%s=conf.%s;\n"%(v,v))    
      
 def print_fields(f,s):
   fields=s.split(",")
@@ -102,8 +101,8 @@ with open ("gen/config_data.h","w") as f:
               i=i+1
               if l.type=='Input':
                   continue
-              if l.type=='Split':
-                  continue
+#              if l.type=='Split':
+#                  continue
               f.write("extern struct %sLayer_conf %s_conf;\n" %(l.type,name))
 
     f.close()
@@ -125,8 +124,8 @@ void sc_net::config_layers()
               i=i+1
               if l.type=='Input':
                   continue
-              if l.type=='Split':
-                  continue
+#              if l.type=='Split':
+#                  continue
               f.write("%s.get().config(%s_conf);\n" %(name,name))
 
     f.write("\n}")

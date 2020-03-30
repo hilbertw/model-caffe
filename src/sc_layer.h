@@ -71,22 +71,25 @@ void sc_layer<T>::run()
      
         }
         else 
-        {
-          if(bottom_blob_filled )
-          {
-                 bottom_empty.write(false);
-          }
-          else if(!bottom_empty.read() && top_blob_empty.read())
-          {
+        {   
+            if(bottom_empty.read())
+            {
+                 if(bottom_blob_filled )
+                 {
+                    bottom_empty.write(false);
+                  }
+            }
+            else if( top_blob_empty.read())
+            {
                  forward();
                  top_filled.write(true);
                  bottom_empty.write(true);
-          }
-          if ( !top_blob_empty.read())
-          {
+            }
+            else 
+            {
                  top_filled.write(false);
                
-          }
+            }
         }
         debug();
 }

@@ -56,6 +56,8 @@ try{
                 {
                        bridge::read_out_result();
                        output_empty.write(true);
+                       std::cout <<"ended.\n";
+                       break;
                 }else   output_empty.write(false);
 	}
 	
