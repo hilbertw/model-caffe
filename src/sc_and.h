@@ -22,7 +22,7 @@ SC_MODULE(sc_and)
    void debug()
    {
 
-        std::cout << name() << std::endl;
+        std::cout << name() << ":";
 
         for(int i=0;i<N;i++) std::cout <<"in" << i <<':'<<in[i] << ";";
         std:cout <<"out:" << result << std::endl;

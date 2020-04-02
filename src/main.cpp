@@ -38,15 +38,20 @@ try{
         reset.write(true);
         cout << "running..." << endl;
 	int numberCycles = 0;
-
-	while (numberCycles<1000 && not sc_end_of_simulation_invoked()) {
+        bool input_enable=true;
+	while (numberCycles<150 && not sc_end_of_simulation_invoked()) {
                 std::cout <<"No:" << numberCycles <<":"<<std::endl;
+//                std::cout <<"input enable:" << input_enable <<":"<<std::endl;
+//                std::cout <<"input empty:" << net.input_empty.read() <<":"<<std::endl;
+//                std::cout <<"output empty:" << output_empty.read() <<":"<<std::endl;
+//                std::cout <<"output filled:" << net.output_filled.read() <<":"<<std::endl;
 		clock = 0;
-//                net.debug();
-                if(net.input_empty.read())
+                net.debug();
+                if(input_enable&&net.input_empty.read())
                 {
                        bridge::read_in_image();
                        input_filled.write(true);
+                       input_enable=false;
                 }else input_filled.write(false);
 		sc_start(1, SC_NS);
 		clock = 1;

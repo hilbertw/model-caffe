@@ -70,7 +70,7 @@ with open("gen/submodules.h","w") as f:
          bottom_layers=find_bottom_layer(net,i)
          n=len(bottom_layers)
          if n>1:
-              f.write("sc_and<%d> %s_bottom_and{\"%s_bottom_and\"};\n"%(n,name,name))
+              f.write("sc_gated_and<%d> %s_bottom_and{\"%s_bottom_and\"};\n"%(n,name,name))
          i=i+1
      s=[]
      for id in net._inputs:
@@ -83,7 +83,7 @@ with open("gen/submodules.h","w") as f:
      if n <1:
          raise(0)    
      if n>1:
-              f.write("sc_and<%d> input_and{\"input_and\"};\n"%(n))
+              f.write("sc_gated_and<%d> input_and{\"input_and\"};\n"%(n))
     
      s=[]
      for id in net._outputs:

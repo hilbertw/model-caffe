@@ -35,6 +35,7 @@ SC_MODULE(  sc_layer) {
    sc_in<bool> bottom_blob_filled;
    sc_signal<bool>top_filled;
    sc_signal<bool>bottom_empty;
+   sc_signal<bool> forwarded;
 
    void run();
     T & get() {return caffe_layer;}
@@ -63,27 +64,44 @@ SC_MODULE(  sc_layer) {
 template<class T>
 void sc_layer<T>::run()
 {
-        debug();
+//        debug();
         if(reset.read()==false)
         {
+                 forwarded.write(false);
                  top_filled.write(false);
                  bottom_empty.write(true);
      
         }
-        else 
+        else if (clk.posedge()) 
         {   
             if(bottom_empty.read())
             {
-                 if(bottom_blob_filled )
+                 if(bottom_blob_filled && !forwarded.read())
                  {
                     bottom_empty.write(false);
                   }
             }
-            else if( top_blob_empty.read())
+            else
             {
+                 if(top_filled.read())
+                 {
+                    bottom_empty.write(true);
+                 }
+            } 
+
+            if(!bottom_blob_filled.read()) forwarded.write(false);
+            else if(top_filled.read()) forwarded.write(true); 
+            
+            
+            if( top_blob_empty.read())
+            {   
+                if(!bottom_empty.read()&& !forwarded.read())
+                {
+                 std::cout <<name() << std::endl;
+                 //getchar();
                  forward();
                  top_filled.write(true);
-                 bottom_empty.write(true);
+                 }
             }
             else 
             {
@@ -91,5 +109,5 @@ void sc_layer<T>::run()
                
             }
         }
-        debug();
+ //       debug();
 }

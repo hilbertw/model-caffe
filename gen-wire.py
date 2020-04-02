@@ -38,6 +38,8 @@ def print_top_wire(f,net,i):
        else:
            f.write("%s.top_blob_empty(output_empty);\n"%(self))
      else:
+#       f.write("%s_top_and.clk(clk);\n"%(self))
+#       f.write("%s_top_and.reset(reset);\n"%(self))
        j=0
        for id in top_ids:
            l=find_in_bottom(net,id,i)
@@ -66,6 +68,8 @@ def print_bottom_wire(f,net,i):
        else:
           f.write("%s.bottom_blob_filled(input_filled);\n"%(self))
      else:
+       f.write("%s_bottom_and.clk(clk);\n"%(self))
+       f.write("%s_bottom_and.reset(reset);\n"%(self))
        j=0
        for id in bottom_ids:
            l=find_in_top(net,id,i)
@@ -124,6 +128,8 @@ void sc_net::setup_wires()
           raise(0)
      if n>1:
           i=0
+          f.write("input_and.clk(clk);\n")
+          f.write("input_and.reset(reset);\n")
           for ss in s:
               name=net._layer_names[ss]
               f.write("input_and.in[%d](%s.bottom_blob_empty);\n"%(i,name))
@@ -147,6 +153,8 @@ void sc_net::setup_wires()
 
      if n>1:
           i=0
+#          f.write("output_and.clk(clk);\n")
+#          f.write("output_and.reset(reset);\n")
           for ss in s:
               name=net._layer_names[ss]
               f.write("output_and.in[%d](%s.top_blob_filled);\n"%(i,name))
