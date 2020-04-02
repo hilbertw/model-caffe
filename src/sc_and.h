@@ -24,7 +24,7 @@ SC_MODULE(sc_and)
 
         std::cout << name() << ":";
 
-        for(int i=0;i<N;i++) std::cout <<"in" << i <<':'<<in[i] << ";";
+        for(int i=0;i<N;i++) std::cout <<"in" << i <<":" << in[i] << ";";
         std:cout <<"out:" << result << std::endl;
        
    }
