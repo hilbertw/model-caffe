@@ -23,7 +23,13 @@ int sc_main(int argc, char* argv[]) {
 try{
 	sc_net net("net");
         net.dump();
-        bridge::init(net.input_blobs[0],net.output_blobs[0]);	
+        if(bridge::init(net.input_blobs[0],net.output_blobs[0])<0)
+        {
+               std::cout <<"cannot init cv bridge."<< std::endl;
+               return 1;
+        }
+        bridge::set_mean(std::string(""),std::string("104,117,123"));
+	
 	sc_signal<bool> clock;
 	sc_signal<bool> reset;
 	sc_signal<bool> input_filled;
@@ -51,7 +57,7 @@ try{
 //                std::cout <<"output empty:" << output_empty.read() <<":"<<std::endl;
 //                std::cout <<"output filled:" << net.output_filled.read() <<":"<<std::endl;
 		clock = 0;
-                net.debug();
+                //net.debug();
                 if(input_enable&&net.input_empty.read())
                 {
                        bridge::read_in_image(argv[1]);

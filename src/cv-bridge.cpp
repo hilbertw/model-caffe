@@ -53,4 +53,8 @@ int read_out_result()
    return 0;
 }
 
+void set_mean(const std::string &mean_file ,const std::string & mean_value)
+{
+    detector->SetMean(mean_file,mean_value);
+}
 }

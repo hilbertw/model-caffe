@@ -13,8 +13,8 @@ Detector::Detector( caffe::Blob<float>* in, caffe::Blob<float>* out):
 }
 
 void Detector::Detect_in(const cv::Mat& img) {
-  input_layer->Reshape(1, num_channels_,
-                       input_geometry_.height, input_geometry_.width);
+  //input_layer->Reshape(1, num_channels_,
+ //                      input_geometry_.height, input_geometry_.width);
   /* Forward dimension change to all layers. */
   //net_->Reshape();
 
@@ -154,7 +154,6 @@ void Detector::Preprocess(const cv::Mat& img,
    * input layer of the network because it is wrapped by the cv::Mat
    * objects in input_channels. */
   cv::split(sample_normalized, *input_channels);
-
   CHECK(reinterpret_cast<float*>(input_channels->at(0).data)
         == input_layer->cpu_data())
     << "Input channels are not wrapping the input layer of the network.";
