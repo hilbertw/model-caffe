@@ -13,9 +13,16 @@ fi
 #while((1==1));
 #do
 #gdb --args \
+#build/ssd_detect \
+#./models/VGGNet/VOC0712Plus/SSD_512x512/deploy.prototxt \
+#./models/VGGNet/VOC0712Plus/SSD_512x512/VGG_VOC0712Plus_SSD_512x512_iter_240000.caffemodel \
+#--img_file aaa-tests-pedestrian-detection-systems-in-2019-models_100718929_l.jpg \
+#--confidence_threshold ${threshold}  
+
+
 build/ssd_detect \
-./models/VGGNet/VOC0712Plus/SSD_512x512/deploy.prototxt \
-./models/VGGNet/VOC0712Plus/SSD_512x512/VGG_VOC0712Plus_SSD_512x512_iter_240000.caffemodel \
+./models/VGGNet/VOC0712/SSD_300x300/deploy.prototxt \
+./models/VGGNet/VOC0712/SSD_300x300/VGG_VOC0712_SSD_300x300_iter_120000.caffemodel \
 --img_file aaa-tests-pedestrian-detection-systems-in-2019-models_100718929_l.jpg \
 --confidence_threshold ${threshold}  
 
