@@ -26,6 +26,8 @@ template <typename Dtype> Dtype * get_data(int flag, int size)
 }
 template <typename Dtype> void conv_blob_dtype(caffe::Blob<Dtype>&dest, blob_dtype_def<Dtype>& def )
 {
+    if(def.shape.count)
+    {
         std::vector<int> shape;
         conv_shape(shape,def.shape);
         dest.Reshape(shape);
@@ -42,6 +44,7 @@ template <typename Dtype> void conv_blob_dtype(caffe::Blob<Dtype>&dest, blob_dty
 
              dest.set_cpu_diff(d);
         }
+    }
 }
 template void conv_blob_dtype(caffe::Blob<float>&dest, blob_dtype_def<float>&);
 template void conv_blob_dtype(caffe::Blob<int>&dest, blob_dtype_def<int>&);
@@ -77,7 +80,7 @@ void conv_blob_double(caffe::Blob<double>&dest, blob_double_def& def )
 
 template <typename Dtype> void conv_data_transformer(boost::shared_ptr<caffe::DataTransformer<Dtype> >&dest, data_transformer_def<Dtype>& def )
 {
-
+#if 0
      caffe::TransformationParameter param;
      caffe::DataTransformer<Dtype>*p = new caffe::DataTransformer<Dtype>(param,caffe::Phase(def.phase));
      assert(p);
@@ -86,7 +89,7 @@ template <typename Dtype> void conv_data_transformer(boost::shared_ptr<caffe::Da
      conv_blob_dtype<Dtype>(p->data_mean_,def.data_mean_);
      boost::shared_ptr<caffe::DataTransformer<Dtype> >p_ptr(p);
      dest=p_ptr;
-
+#endif
 }
 template void conv_data_transformer<float>(boost::shared_ptr<caffe::DataTransformer<float> >&dest, data_transformer_def<float>& def );
 template void conv_data_transformer<double>(boost::shared_ptr<caffe::DataTransformer<double> >&dest, data_transformer_def<double>& def );
