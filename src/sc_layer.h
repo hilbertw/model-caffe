@@ -4,6 +4,7 @@
 #include "caffe/caffe.hpp"
 #include "caffe/blob.hpp"
 #include "hack/types.h"
+#include "hack/debug.h"
 
 template<class T>
 SC_MODULE(  sc_layer) {
@@ -42,7 +43,16 @@ SC_MODULE(  sc_layer) {
 
    void forward()
    {
+BEGIN_DEBUG(name())
+    // LOG(ERROR) << "Forwarding " << layer_names_[i];
+    debug::print_blobs(fp,"blobs_",caffe_layer.blobs());
+
+    debug::print_blobs(fp,"bottom_vecs_",bottom);
+
+    debug::print_blobs(fp,"top_vecs_ before:",top);
         caffe_layer.Forward(bottom,top);
+    debug::print_blobs(fp,"top_vecs_ after:",top);
+END_DEBUG
    }
    std::vector<caffe::shared_ptr<caffe::Blob<_Dtype_>>> &blobs()
    {
