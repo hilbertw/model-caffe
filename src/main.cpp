@@ -13,6 +13,11 @@ using namespace std;
 
 // sc_main in top level function like in C++ main
 int sc_main(int argc, char* argv[]) {
+        if( argc<2)
+        {
+             std::cout <<"Usage:./sim <img>" << std::endl;
+             return 0;
+        }
         cout << "Loading processor..." << endl;
 	sleep(1);
 try{
@@ -49,7 +54,7 @@ try{
                 net.debug();
                 if(input_enable&&net.input_empty.read())
                 {
-                       bridge::read_in_image();
+                       bridge::read_in_image(argv[1]);
                        input_filled.write(true);
                        input_enable=false;
                 }else input_filled.write(false);
@@ -59,11 +64,12 @@ try{
 		numberCycles++;
                 if(net.output_filled.read())
                 {
+                       output_empty.write(false);
                        bridge::read_out_result();
                        output_empty.write(true);
                        std::cout <<"ended.\n";
                        break;
-                }else   output_empty.write(false);
+                }
 	}
 	
 	cout << "\nFinished after " << numberCycles - 4 << " cycles. Final state:\n" << endl;	
