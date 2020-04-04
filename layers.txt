@@ -17,7 +17,7 @@ PriorBoxLayer prior_box_layer prior_box_param
 #ReLU
 ReLULayer relu_layer relu_param
 #Reshape
-ReshapeLayer reshape_layer reshape_param
+ReshapeLayer reshape_layer reshape_param 1 1
 #Softmax
 SoftmaxLayer softmax_layer softmax_param
 InputLayer input_layer input_param 0 0

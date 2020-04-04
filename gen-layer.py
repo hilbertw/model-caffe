@@ -44,18 +44,29 @@ void %s_ext::setup(%s & param)
 """
 
 
-methods_h="""
+method1_h="""
 void Reshape(const std::vector<caffe::Blob<float>*>& bottom,
       const std::vector<caffe::Blob<float>*>& top);
 """
 
-methods_cpp="""
+method1_cpp="""
 void %s_ext::Reshape(const std::vector<Blob<float>*>& bottom,
       const std::vector<Blob<float>*>& top)
 {
 }
 """
 
+method2_h="""
+void Forward_cpu(const std::vector<caffe::Blob<float>*>& bottom,
+      const std::vector<caffe::Blob<float>*>& top);
+"""
+
+method2_cpp="""
+void %s_ext::ForWard_cpu(const std::vector<Blob<float>*>& bottom,
+      const std::vector<Blob<float>*>& top)
+{
+}
+"""
 input=[]
 
 with open("layers.txt","r") as f:
@@ -69,21 +80,27 @@ with open("layers.txt","r") as f:
        if len(words)<3:
             raise(0)
        words.append("1")
-       words.append("1")
+       words.append("0")
        p=words[2]
        fn=words[1]
        c=words[0]
        input.append(words)
        m=""
        if words[3]=="1":
-         m=methods_h
+         m=method1_h
+
+       if words[4]=="1":
+         m=m+method2_h
 
        with open("gen/"+fn+"_ext.h","w") as ff:
           ff.write(h_tmpl%(fn,c,c,c,c,p,p,p,c,p,m))
           ff.close()
        m=""
        if words[3]=="1":
-         m=methods_cpp%(c)
+         m=method1_cpp%(c)
+
+       if words[4]=="1":
+         m=m+method2_cpp%(c)
 
        with open("gen/"+fn+"_ext.skel","w") as ff:
           ff.write(cpp_tmpl%(fn,c,p,c,c,c,m))
