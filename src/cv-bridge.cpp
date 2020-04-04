@@ -2,7 +2,7 @@
 #include "cv-bridge.h"
 
 namespace bridge{
-
+const float confidence_threshold=0.2;
 cv:: Mat img;
 Detector * detector; 
 int init(caffe::Blob<float>* input_blob,caffe::Blob<float>* output_blob)
@@ -31,6 +31,7 @@ int read_out_result()
         const float score = d[2];
         const int tpye = d[1];
         if (tpye == 15) {
+          if (score >= confidence_threshold) {
             // cout << static_cast<int>(d[1]) << endl;
             // out << file << " ";
             // out << static_cast<int>(d[1]) << " ";
@@ -45,6 +46,7 @@ int read_out_result()
             pt2.x = (img.cols*d[5]);
             pt2.y = (img.rows*d[6]);
             cv::rectangle(img, pt1, pt2, cvScalar(0, 255, 0), 3, 8, 0);
+         }
        }
    }
    cv::imshow("img",img);
