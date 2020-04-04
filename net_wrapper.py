@@ -42,7 +42,8 @@ class net_wrapper:
       r=[]
       for b in s:
           n=self.convert_blob(b)
-          r.append(b)
+          r.append(n)
+      
       return r
 
   def build(self):
@@ -57,7 +58,7 @@ class net_wrapper:
         top=self.net._top_ids(i)
         bottom=self.net._bottom_ids(i)
 #        if len(top)>0 and len(bottom)>0:
-#           print("%d,%d"%(top[0],bottom[0]))
+#           print("%d:%d,%d"%(i,top[0],bottom[0]))
         if len(top)==1 and len(bottom)==1 and top[0]==bottom[0]:
            idx=top[0]
            new_idx=self.add_blob(idx)
