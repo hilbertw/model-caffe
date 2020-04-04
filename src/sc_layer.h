@@ -105,7 +105,7 @@ void sc_layer<T>::run()
             
             if( top_blob_empty.read())
             {   
-                if(!bottom_empty.read()&& !forwarded.read())
+                if(!bottom_empty.read()&& !forwarded.read()&& !top_filled.read())
                 {
                  std::cout <<name() << std::endl;
                  //getchar();
